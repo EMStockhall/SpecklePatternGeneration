@@ -35,6 +35,7 @@ def genSpace(num, min_dist, max_dist, grid_size, num_grid):
                     pos.append(point)
                     attempt = 0
                     loop = 0
+                    count = 0
                 else:
                     attempt += 1
             if len(pos) >= lower_bound:
@@ -46,7 +47,8 @@ def genSpace(num, min_dist, max_dist, grid_size, num_grid):
                 if lastPoint >= len(pos):
                     lastPoint = 0
                     loop += 1
-            testVar += 1
+            if count >= 1000:
+                cond = False
             
 
     def checkDist(point):
@@ -61,19 +63,22 @@ def genSpace(num, min_dist, max_dist, grid_size, num_grid):
     return pos
     
 
-f = genSpace([3,5], 6, 12, 20, 10)
-print(len(f))
-
+f = genSpace([3,6], 7, 13, 20, 10)
+print("Particle Count = ",len(f))
+size_aveC = 0.
 fig = plt.figure(figsize=(7,7))
 ax = fig.add_subplot(111)
 ax.set_aspect("equal")
 for i in range(0,len(f)):
-    ax.add_patch(plt.Circle((f[i][0], f[i][1]), 2, color='k', alpha=1))
+    size = np.random.randint(2, 4)+(np.random.randint(0,1)*2-1)*np.random.rand()
+    size_aveC += size
+    ax.add_patch(plt.Circle((f[i][0], f[i][1]), size, color='k', alpha=1))
 plt.xlim(0, 20*10)
 plt.ylim(0, 20*10)
 plt.axis('off')
 plt.show()
-
+size_av = size_aveC/len(f)
+print("Average particle size = ",size_av)
 
 
 fig, ax = plt.subplots()

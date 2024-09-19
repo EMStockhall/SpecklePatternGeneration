@@ -5,6 +5,17 @@ import matplotlib.animation as animation
 
 
 def genSpace(num, min_dist, max_dist, grid_size, num_grid):
+    """
+    Generates a speckle pattern by creating a set of points within a specified grid.
+    Parameters:
+    num (tuple): A tuple containing the minimum and maximum number of points to generate.
+    min_dist (float): The minimum distance between any two points.
+    max_dist (float): The maximum distance a new point can be from the last point.
+    grid_size (float): The size of each grid cell.
+    num_grid (int): The number of grid cells along one dimension (total grid cells = num_grid^2).
+    Returns:
+    list: A list of numpy arrays, each representing a point in the speckle pattern.
+    """
     # Function to generate the speckle pattern
 
     pos = []

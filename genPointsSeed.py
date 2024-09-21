@@ -87,7 +87,7 @@ def genSpace(num, size, dist, grid_size, num_grid):
     return pos, sizeAr
     
 
-f, s = genSpace([7,10], [3,8], [1.5, 7], 20, 10)
+f, s = genSpace([6,10], [3,8], [2.5, 7], 20, 10)
 print("Particle Count = ",len(f))
 size_aveC = 0.
 fig = plt.figure(figsize=(7,7))

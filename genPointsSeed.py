@@ -87,14 +87,15 @@ def genSpace(num, size, dist, grid_size, num_grid):
     return pos, sizeAr
     
 
-f, s = genSpace([3,10], [3,7], [1.5, 7], 20, 10)
+f, s = genSpace([7,10], [3,8], [1.5, 7], 20, 10)
 print("Particle Count = ",len(f))
 size_aveC = 0.
 fig = plt.figure(figsize=(7,7))
 ax = fig.add_subplot(111)
 ax.set_aspect("equal")
 for i in range(0,len(f)):
-    ax.add_patch(plt.Circle((f[i][0], f[i][1]), s[i]/2, color='k', alpha=.5))
+    ax.add_patch(plt.Circle((f[i][0], f[i][1]), s[i]/2, color='k', alpha=1))
+    size_aveC += s[i]
 plt.xlim(0, 20*10)
 plt.ylim(0, 20*10)
 plt.axis('off')
@@ -103,22 +104,22 @@ size_av = size_aveC/len(f)
 print("Average particle size = ",size_av)
 
 
-fig, ax = plt.subplots()
-t = np.linspace(0, 1, len(f))
-ax.set_aspect("equal")
-scat = ax.scatter(f[0][0], f[0][1], c="b", s=5)
-plt.xlim(0, 20*10)
-plt.ylim(0, 20*10)
+# fig, ax = plt.subplots()
+# t = np.linspace(0, 1, len(f))
+# ax.set_aspect("equal")
+# scat = ax.scatter(f[0][0], f[0][1], c="b", s=5)
+# plt.xlim(0, 20*10)
+# plt.ylim(0, 20*10)
 
-def update(frame):
-    # for each frame, update the data stored on each artist.
-    x = [point[0] for point in f[:frame]]
-    y = [point[1] for point in f[:frame]]
-    # update the scatter plot:
-    data = np.stack([x, y]).T
-    scat.set_offsets(data)
-    # update the line plot:
-    return (scat,)
+# def update(frame):
+#     # for each frame, update the data stored on each artist.
+#     x = [point[0] for point in f[:frame]]
+#     y = [point[1] for point in f[:frame]]
+#     # update the scatter plot:
+#     data = np.stack([x, y]).T
+#     scat.set_offsets(data)
+#     # update the line plot:
+#     return (scat,)
 
-ani = animation.FuncAnimation(fig=fig, func=update, frames=len(f)-1, interval=30)
-plt.show()
+# ani = animation.FuncAnimation(fig=fig, func=update, frames=len(f)-1, interval=30)
+# plt.show()

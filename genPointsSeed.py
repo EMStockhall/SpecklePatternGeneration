@@ -4,21 +4,28 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
 
-def genSpace(num, min_dist, max_dist, grid_size, num_grid):
+def genSpace(num, size, dist, grid_size, num_grid):
     """
-    Generates a speckle pattern by creating a set of points within a specified grid.
+    Generates a space filled with points and their corresponding sizes based on specified parameters.
     Parameters:
-    num (tuple): A tuple containing the minimum and maximum number of points to generate.
-    min_dist (float): The minimum distance between any two points.
-    max_dist (float): The maximum distance a new point can be from the last point.
+    num (tuple): A tuple containing the minimum and maximum number of points to generate per grid.
+    size (tuple): A tuple containing the lower and upper bounds for the size of each point.
+    dist (tuple): A tuple containing the minimum and maximum distance between points.
     grid_size (float): The size of each grid cell.
     num_grid (int): The number of grid cells along one dimension (total grid cells = num_grid^2).
     Returns:
-    list: A list of numpy arrays, each representing a point in the speckle pattern.
+    tuple: A tuple containing:
+        - pos (list of numpy.ndarray): A list of 2D coordinates for each generated point.
+        - sizeAr (list of float): A list of sizes corresponding to each generated point.
     """
-    # Function to generate the speckle pattern
+
 
     pos = []
+    min_dist = dist[0]
+    max_dist = dist[1]
+    size_lb = size[0]
+    size_ub = size[1]
+    sizeAr = []
     
     def genPoints():
         testVar = 0
@@ -38,12 +45,16 @@ def genSpace(num, min_dist, max_dist, grid_size, num_grid):
                         y = (grid_size/4)*(np.random.randint(0,1)*2-1)*np.random.rand()+j*grid_size + grid_size/2
                         point = np.array([x, y])
                         pos.append(point)
+                        sizeNew = np.random.randint(size_lb+1, size_ub-1)+(np.random.randint(0,1)*2-1)*np.random.rand()
+                        sizeAr.append(sizeNew)
             else:
                 x = pos[lastPoint][0] + np.random.rand()+np.random.randint(-max_dist+1, max_dist+1)
                 y = pos[lastPoint][1] + np.random.rand()+np.random.randint(-max_dist+1, max_dist+1)
                 point = np.array([x, y])
-                if checkDist(point):
+                sizeNew = np.random.randint(size_lb+1, size_ub-1)+(np.random.randint(0,1)*2-1)*np.random.rand()
+                if checkDist(point, sizeNew):
                     pos.append(point)
+                    sizeAr.append(sizeNew)
                     attempt = 0
                     loop = 0
                     count = 0
@@ -53,7 +64,7 @@ def genSpace(num, min_dist, max_dist, grid_size, num_grid):
                 count += 1
             if len(pos) >= upper_bound:
                 cond = False
-            if attempt >= 10:
+            if attempt >= 30:
                 lastPoint += 1
                 if lastPoint >= len(pos):
                     lastPoint = 0
@@ -62,28 +73,28 @@ def genSpace(num, min_dist, max_dist, grid_size, num_grid):
                 cond = False
             
 
-    def checkDist(point):
-        if np.all(cdist([point], pos) >= min_dist):
+    def checkDist(point, sizeNew):
+        dist = cdist([point], pos)
+        for i in range(0, len(pos)):
+            if np.any(dist[i] < min_dist+sizeNew/2+sizeAr[i]/2):
+                return False
             if np.all(point >= 2) and np.all(point <= grid_size*num_grid-2):
                 return True
             else:
                 return False
-        else:
-            return False
+    
     genPoints()
-    return pos
+    return pos, sizeAr
     
 
-f = genSpace([3,6], 7, 13, 20, 10)
+f, s = genSpace([3,10], [3,7], [1.5, 7], 20, 10)
 print("Particle Count = ",len(f))
 size_aveC = 0.
 fig = plt.figure(figsize=(7,7))
 ax = fig.add_subplot(111)
 ax.set_aspect("equal")
 for i in range(0,len(f)):
-    size = np.random.randint(2, 4)+(np.random.randint(0,1)*2-1)*np.random.rand()
-    size_aveC += size
-    ax.add_patch(plt.Circle((f[i][0], f[i][1]), size, color='k', alpha=1))
+    ax.add_patch(plt.Circle((f[i][0], f[i][1]), s[i]/2, color='k', alpha=.5))
 plt.xlim(0, 20*10)
 plt.ylim(0, 20*10)
 plt.axis('off')
